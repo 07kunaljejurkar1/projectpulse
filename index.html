@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PAIMANA-AI | Integrated Predictive & Prescriptive Project Monitoring</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+  <!-- TOP APP BAR -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between">
+      <div class="flex items-center space-x-3.5">
+        <div class="bg-blue-800 text-white p-2 rounded-lg shadow-sm">
+          <i data-lucide="building-2" class="w-6 h-6"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-lg font-bold text-slate-900 tracking-tight">PAIMANA-AI Sentinel</h1>
+            <span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">DIID Prototype</span>
+          </div>
+          <p class="text-xs text-slate-500">Ministry of Statistics & Programme Implementation (MoSPI) • Problem Statement #26103</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3 text-xs">
+        <span class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-md border border-emerald-200 font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Live Predictive Engine Active
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+    
+    <!-- DESCRIPTIVE METRICS (MACRO OVERVIEW) -->
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Descriptive Portfolio Health (₹ Lakh Crore Base)</h2>
+        <span class="text-xs text-slate-400">PAIMANA Baseline Parameters</span>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <div class="text-slate-500 text-xs font-medium uppercase">Total Projects Tracked</div>
+          <div class="mt-2 text-3xl font-extrabold text-slate-900" id="kpi-total-projects">0</div>
+          <div class="text-[11px] text-slate-400 mt-1">Multi-sector infrastructure scope</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <div class="text-slate-500 text-xs font-medium uppercase">Orig. vs Revised Outlay</div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span class="text-2xl font-bold text-slate-900" id="kpi-revised-cost">₹0 Cr</span>
+            <span class="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded" id="kpi-escalation-pct">+0%</span>
+          </div>
+          <div class="text-[11px] text-slate-400 mt-1">Orig: <span id="kpi-original-cost">₹0 Cr</span></div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <div class="text-slate-500 text-xs font-medium uppercase">Cumulative Expenditure</div>
+          <div class="mt-2 text-2xl font-bold text-slate-900" id="kpi-expenditure">₹0 Cr</div>
+          <div class="text-[11px] text-slate-400 mt-1">Total physical fund drawal to date</div>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <div class="text-slate-500 text-xs font-medium uppercase">Predictive Risk Profile</div>
+          <div class="mt-2 flex items-center space-x-1.5" id="kpi-risk-breakdown">
+            <!-- Populated via JS -->
+          </div>
+          <div class="text-[11px] text-slate-400 mt-1">Classified by Cost & Delay Lag Index</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ANALYTICS CHARTS SECTION -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="text-sm font-bold text-slate-800 mb-1 flex items-center gap-2">
+          <i data-lucide="bar-chart-2" class="w-4 h-4 text-blue-600"></i> Cost Disparity: Original vs Anticipated vs AI Predicted
+        </h3>
+        <p class="text-xs text-slate-400 mb-4">Predicts terminal overrun using expenditure burn rate relative to milestone completion.</p>
+        <div class="h-64">
+          <canvas id="costComparisonChart"></canvas>
+        </div>
+      </div>
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <h3 class="text-sm font-bold text-slate-800 mb-1 flex items-center gap-2">
+            <i data-lucide="pie-chart" class="w-4 h-4 text-indigo-600"></i> Root-Cause Bottleneck Spread
+          </h3>
+          <p class="text-xs text-slate-400 mb-3">Primary source of time/cost escalation.</p>
+          <div class="h-52">
+            <canvas id="bottleneckChart"></canvas>
+          </div>
+        </div>
+        <div class="text-[11px] text-slate-500 text-center pt-2 border-t border-slate-100">
+          Source: PAIMANA Flash Report Cross-Validation
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKSPACE: PROJECT MASTER LIST + PREDICTIVE/PRESCRIPTIVE PANEL -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- LEFT: PROJECT MASTER DIRECTORY (7 Cols) -->
+      <div class="lg:col-span-7 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+        <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+          <div>
+            <h3 class="font-bold text-sm text-slate-800">Monitored Portfolio Directory</h3>
+            <p class="text-xs text-slate-500">Click any project to inspect prescriptive recommendations</p>
+          </div>
+          <div class="text-xs text-slate-400 font-mono">Real-time Stream</div>
+        </div>
+        
+        <div class="divide-y divide-slate-100 max-h-[580px] overflow-y-auto custom-scrollbar" id="project-list-container">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- RIGHT: AI PREDICTIVE & PRESCRIPTIVE SUITE (5 Cols) -->
+      <div class="lg:col-span-5 space-y-6">
+        
+        <!-- PRESCRIPTIVE RECOMMENDATION CARD -->
+        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-5" id="prescriptive-panel">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <span class="text-[10px] font-bold tracking-wider text-indigo-600 uppercase bg-indigo-50 px-2 py-0.5 rounded">Prescriptive Engine</span>
+              <h3 class="text-base font-bold text-slate-900 mt-1" id="detail-project-name">Select a project</h3>
+            </div>
+            <div id="detail-risk-badge"></div>
+          </div>
+
+          <!-- Quick Metrics Bar -->
+          <div class="grid grid-cols-3 gap-3 bg-slate-50 p-3 rounded-lg border border-slate-100 text-center">
+            <div>
+              <span class="text-[10px] text-slate-500 uppercase font-semibold">Time Delay</span>
+              <div class="text-sm font-extrabold text-slate-800" id="detail-delay">-</div>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 uppercase font-semibold">Risk Index</span>
+              <div class="text-sm font-extrabold text-slate-800" id="detail-risk-score">-</div>
+            </div>
+            <div>
+              <span class="text-[10px] text-slate-500 uppercase font-semibold">Predicted Outlay</span>
+              <div class="text-sm font-extrabold text-blue-700" id="detail-predicted-cost">-</div>
+            </div>
+          </div>
+
+          <!-- Root Cause -->
+          <div>
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Identified Root-Cause Bottleneck</span>
+            <div class="mt-1.5 p-3 rounded-lg bg-amber-50/70 border border-amber-200/80 text-amber-900 text-xs font-medium flex items-center gap-2">
+              <i data-lucide="alert-octagon" class="w-4 h-4 text-amber-600 shrink-0"></i>
+              <span id="detail-bottleneck">None</span>
+            </div>
+          </div>
+
+          <!-- Automated Directives -->
+          <div>
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5 text-indigo-600"></i> Actionable Mitigation Interventions
+            </span>
+            <div class="space-y-2.5" id="detail-prescriptions">
+              <!-- Prescriptions rendered here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- WHAT-IF SCENARIO SIMULATOR -->
+        <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white p-6 rounded-xl shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="text-sm font-bold flex items-center gap-2">
+              <i data-lucide="sliders" class="w-4 h-4 text-blue-400"></i> What-If Escalation Simulator
+            </h4>
+            <span class="text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">Dynamic AI Model</span>
+          </div>
+          <p class="text-xs text-slate-300">Simulate additional delay months to evaluate projected financial escalation impact.</p>
+          
+          <div>
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span class="text-slate-400">Simulated Additional Delay:</span>
+              <span class="text-blue-400 font-bold" id="slider-months-val">+6 Months</span>
+            </div>
+            <input 
+              type="range" 
+              id="delay-slider" 
+              min="0" 
+              max="24" 
+              value="6" 
+              class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-500"
+              oninput="updateSimulator(this.value)"
+            />
+          </div>
+
+          <div class="p-3 bg-slate-800/80 rounded-lg border border-slate-700 flex justify-between items-center text-xs">
+            <span class="text-slate-400">Simulated Terminal Cost:</span>
+            <span class="text-sm font-extrabold text-emerald-400" id="simulated-cost-result">₹0 Cr</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- SCRIPT LOGIC (DESCRIPTIVE + PREDICTIVE + PRESCRIPTIVE ENGINE) -->
+  <script>
+    // 1. DATASET: Structured according to MoSPI / PAIMANA parameters
+    const RAW_PROJECTS = [
+      {
+        id: "INFRA-261",
+        name: "Western Dedicated Freight Corridor (Phase-I)",
+        sector: "Transport & Logistics",
+        state: "Gujarat & Maharashtra",
+        orig_cost: 51101,
+        rev_cost: 81459,
+        expenditure: 68900,
+        orig_doc: "2023-12",
+        anti_doc: "2026-11",
+        progress_pct: 79.4,
+        bottleneck: "Land Acquisition & Right-of-Way (RoW) Clearance"
+      },
+      {
+        id: "INFRA-482",
+        name: "Ultra Mega Ultra-Critical Thermal Power Plant",
+        sector: "Energy",
+        state: "Odisha",
+        orig_cost: 14200,
+        rev_cost: 16800,
+        expenditure: 11400,
+        orig_doc: "2025-04",
+        anti_doc: "2026-08",
+        progress_pct: 64.0,
+        bottleneck: "Equipment Logistics & Supply Chain Disruption"
+      },
+      {
+        id: "INFRA-709",
+        name: "National Inland Multi-Modal Freight Terminal",
+        sector: "Water & Sanitation",
+        state: "Uttar Pradesh",
+        orig_cost: 2100,
+        rev_cost: 2190,
+        expenditure: 1950,
+        orig_doc: "2026-06",
+        anti_doc: "2026-09",
+        progress_pct: 92.5,
+        bottleneck: "None / Routine Operations"
+      },
+      {
+        id: "INFRA-890",
+        name: "Coking Coal Washery & Processing Complex",
+        sector: "Coal, Steel & Mining",
+        state: "Jharkhand",
+        orig_cost: 4900,
+        rev_cost: 6750,
+        expenditure: 3200,
+        orig_doc: "2024-03",
+        anti_doc: "2027-02",
+        progress_pct: 42.0,
+        bottleneck: "Forest & Environmental Clearance Stage-II"
+      },
+      {
+        id: "INFRA-314",
+        name: "Semi-High-Speed Suburban Rail Corridor",
+        sector: "Transport & Logistics",
+        state: "Delhi-NCR",
+        orig_cost: 30274,
+        rev_cost: 32500,
+        expenditure: 24100,
+        orig_doc: "2025-01",
+        anti_doc: "2026-05",
+        progress_pct: 82.0,
+        bottleneck: "Utility Shifting & Municipal NOCs"
+      }
+    ];
+
+    let selectedProject = null;
+    let costChartInstance = null;
+    let bottleneckChartInstance = null;
+
+    // 2. PREDICTIVE & PRESCRIPTIVE ENGINE
+    function calculateDelayMonths(origStr, antiStr) {
+      const [oy, om] = origStr.split('-').map(Number);
+      const [ay, am] = antiStr.split('-').map(Number);
+      return Math.max(0, (ay - oy) * 12 + (am - om));
+    }
+
+    function analyzeProject(p) {
+      const cost_overrun = Math.max(0, p.rev_cost - p.orig_cost);
+      const cost_overrun_pct = ((cost_overrun / p.orig_cost) * 100);
+      const delay_months = calculateDelayMonths(p.orig_doc, p.anti_doc);
+      
+      // Burn-rate predictive coefficient
+      const burn_ratio = p.expenditure / p.rev_cost;
+      const progress_ratio = p.progress_pct / 100;
+      let escalation_factor = 1.0;
+      if (progress_ratio > 0 && burn_ratio > progress_ratio) {
+        escalation_factor = burn_ratio / progress_ratio;
+      }
+      const predicted_final_cost = Math.round(p.rev_cost * Math.min(escalation_factor, 1.30));
+
+      // Composite Risk Index (0 - 100)
+      const risk_score = Math.min(100, Math.round((cost_overrun_pct * 0.4) + (delay_months * 1.6) + ((100 - p.progress_pct) * 0.25)));
+      
+      let tier = "Low";
+      if (risk_score >= 65) tier = "Critical";
+      else if (risk_score >= 35) tier = "Medium";
+
+      // Prescriptive Actions Generator
+      const prescriptions = [];
+      const bn = p.bottleneck.toLowerCase();
+
+      if (bn.includes("land") || bn.includes("row")) {
+        prescriptions.push("Trigger state coordination via Chief Secretary-level monitoring committee.");
+        prescriptions.push("Enact direct negotiation payout protocol per RFCTLARR 2013 provisions.");
+      } else if (bn.includes("forest") || bn.includes("environmental")) {
+        prescriptions.push("Escalate issue onto the PMG (Project Monitoring Group) portal for inter-ministerial clearance.");
+        prescriptions.push("Expedite compensatory afforestation land transfer with State Forest Dept.");
+      } else if (bn.includes("supply") || bn.includes("equipment")) {
+        prescriptions.push("Issue contractual notice under EPC Clause 14 for milestone delinquency.");
+        prescriptions.push("Activate parallel multi-vendor procurement for delayed critical-path components.");
+      } else if (bn.includes("utility")) {
+        prescriptions.push("Establish tripartite SLA with local municipal utilities for accelerated diversion.");
+      } else {
+        prescriptions.push("Project tracking within variance tolerance; sustain standard bi-weekly milestone audits.");
+      }
+
+      if (delay_months > 12) {
+        prescriptions.push("Initiate formal EPC contract restructuring to ringfence further financial liabilities.");
+      }
+
+      return {
+        ...p,
+        cost_overrun,
+        cost_overrun_pct: cost_overrun_pct.toFixed(1),
+        delay_months,
+        predicted_final_cost,
+        risk_score,
+        tier,
+        prescriptions
+      };
+    }
+
+    // Process all projects
+    const enrichedProjects = RAW_PROJECTS.map(analyzeProject);
+
+    // 3. UI RENDERING
+    function renderSummaryKPIs() {
+      const totalProjects = enrichedProjects.length;
+      const totalOrig = enrichedProjects.reduce((acc, p) => acc + p.orig_cost, 0);
+      const totalRev = enrichedProjects.reduce((acc, p) => acc + p.rev_cost, 0);
+      const totalExp = enrichedProjects.reduce((acc, p) => acc + p.expenditure, 0);
+      const overallEscalation = (((totalRev - totalOrig) / totalOrig) * 100).toFixed(1);
+
+      document.getElementById('kpi-total-projects').innerText = totalProjects;
+      document.getElementById('kpi-revised-cost').innerText = `₹${(totalRev / 1000).toFixed(1)}k Cr`;
+      document.getElementById('kpi-original-cost').innerText = `₹${(totalOrig / 1000).toFixed(1)}k Cr`;
+      document.getElementById('kpi-escalation-pct').innerText = `+${overallEscalation}%`;
+      document.getElementById('kpi-expenditure').innerText = `₹${(totalExp / 1000).toFixed(1)}k Cr`;
+
+      const criticalCount = enrichedProjects.filter(p => p.tier === 'Critical').length;
+      const mediumCount = enrichedProjects.filter(p => p.tier === 'Medium').length;
+      const lowCount = enrichedProjects.filter(p => p.tier === 'Low').length;
+
+      document.getElementById('kpi-risk-breakdown').innerHTML = `
+        <span class="text-xs font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">${criticalCount} Critical</span>
+        <span class="text-xs font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">${mediumCount} Medium</span>
+        <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">${lowCount} Low</span>
+      `;
+    }
+
+    function renderProjectList() {
+      const container = document.getElementById('project-list-container');
+      container.innerHTML = enrichedProjects.map((p) => {
+        const isSelected = selectedProject && selectedProject.id === p.id;
+        let badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
+        if (p.tier === "Critical") badgeColor = "bg-rose-50 text-rose-700 border-rose-200";
+        if (p.tier === "Medium") badgeColor = "bg-amber-50 text-amber-700 border-amber-200";
+
+        return `
+          <div 
+            onclick="selectProject('${p.id}')"
+            class="p-4 cursor-pointer transition flex items-center justify-between ${isSelected ? 'bg-blue-50/70 border-l-4 border-blue-600' : 'hover:bg-slate-50'}"
+          >
+            <div class="space-y-1">
+              <div class="flex items-center space-x-2">
+                <span class="text-[11px] font-bold font-mono text-slate-400">${p.id}</span>
+                <span class="text-sm font-semibold text-slate-900">${p.name}</span>
+              </div>
+              <div class="text-xs text-slate-500 flex flex-wrap gap-x-4 gap-y-1">
+                <span>Sector: <strong class="text-slate-700">${p.sector}</strong></span>
+                <span>Physical Progress: <strong class="text-slate-700">${p.progress_pct}%</strong></span>
+                <span>Delay: <strong class="${p.delay_months > 0 ? 'text-rose-600' : 'text-slate-600'}">+${p.delay_months} Mos</strong></span>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="text-[11px] font-bold px-2.5 py-1 rounded-full border ${badgeColor}">
+                ${p.tier} Risk (${p.risk_score})
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectProject(id) {
+      selectedProject = enrichedProjects.find(p => p.id === id);
+      renderProjectList();
+      renderDetails();
+      updateSimulator(document.getElementById('delay-slider').value);
+    }
+
+    function renderDetails() {
+      if (!selectedProject) return;
+
+      document.getElementById('detail-project-name').innerText = selectedProject.name;
+      document.getElementById('detail-delay').innerText = `+${selectedProject.delay_months} Months`;
+      document.getElementById('detail-risk-score').innerText = `${selectedProject.risk_score} / 100`;
+      document.getElementById('detail-predicted-cost').innerText = `₹${selectedProject.predicted_final_cost.toLocaleString()} Cr`;
+      document.getElementById('detail-bottleneck').innerText = selectedProject.bottleneck;
+
+      let badgeColor = "bg-emerald-100 text-emerald-800";
+      if (selectedProject.tier === "Critical") badgeColor = "bg-rose-100 text-rose-800";
+      if (selectedProject.tier === "Medium") badgeColor = "bg-amber-100 text-amber-800";
+
+      document.getElementById('detail-risk-badge').innerHTML = `
+        <span class="text-xs font-bold px-2.5 py-1 rounded-md ${badgeColor}">
+          ${selectedProject.tier} Risk
+        </span>
+      `;
+
+      document.getElementById('detail-prescriptions').innerHTML = selectedProject.prescriptions.map((action) => `
+        <div class="text-xs bg-indigo-50/50 border border-indigo-100 text-indigo-950 p-3 rounded-lg flex items-start gap-2.5 leading-relaxed">
+          <span class="text-indigo-600 font-bold">↳</span>
+          <span>${action}</span>
+        </div>
+      `).join('');
+    }
+
+    function updateSimulator(additionalMonths) {
+      document.getElementById('slider-months-val').innerText = `+${additionalMonths} Months`;
+      if (!selectedProject) return;
+
+      // Compound escalation: ~0.85% escalation per month of additional delay
+      const escalationFactor = 1 + (parseInt(additionalMonths) * 0.0085);
+      const simulatedCost = Math.round(selectedProject.predicted_final_cost * escalationFactor);
+      document.getElementById('simulated-cost-result').innerText = `₹${simulatedCost.toLocaleString()} Cr`;
+    }
+
+    // 4. CHART RENDERING
+    function initCharts() {
+      // Cost Comparison Chart
+      const ctx1 = document.getElementById('costComparisonChart').getContext('2d');
+      costChartInstance = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+          labels: enrichedProjects.map(p => p.id),
+          datasets: [
+            {
+              label: 'Original Cost (₹ Cr)',
+              data: enrichedProjects.map(p => p.orig_cost),
+              backgroundColor: '#94a3b8'
+            },
+            {
+              label: 'Revised Anticipated (₹ Cr)',
+              data: enrichedProjects.map(p => p.rev_cost),
+              backgroundColor: '#3b82f6'
+            },
+            {
+              label: 'AI Forecast Final (₹ Cr)',
+              data: enrichedProjects.map(p => p.predicted_final_cost),
+              backgroundColor: '#e11d48'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } }
+          },
+          scales: {
+            y: { ticks: { callback: v => `₹${v/1000}k Cr` } }
+          }
+        }
+      });
+
+      // Bottlenecks Chart
+      const ctx2 = document.getElementById('bottleneckChart').getContext('2d');
+      bottleneckChartInstance = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+          labels: ['Land Acquisition / RoW', 'Forest Clearance', 'Supply Chain / Vendors', 'Utility Shifting', 'Normal'],
+          datasets: [{
+            data: [2, 1, 1, 1, 1],
+            backgroundColor: ['#f43f5e', '#f59e0b', '#8b5cf6', '#0ea5e9', '#10b981']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
+          }
+        }
+      });
+    }
+
+    // INITIALIZATION
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      renderSummaryKPIs();
+      selectedProject = enrichedProjects[0];
+      renderProjectList();
+      renderDetails();
+      initCharts();
+      updateSimulator(6);
+    });
+  </script>
+</body>
+</html>
